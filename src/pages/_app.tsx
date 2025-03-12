@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
+import "@mantine/dropzone/styles.css";
 
 import type { AppProps } from "next/app";
 import {
@@ -42,7 +43,7 @@ const theme = createTheme({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <MantineProvider theme={theme}>
+    <MantineProvider defaultColorScheme="light" theme={theme}>
       <Notifications />
       <main className={dmSans.className}>
         <Component {...pageProps} />
