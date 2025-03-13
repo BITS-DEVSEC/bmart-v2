@@ -36,7 +36,7 @@ export default function Profile() {
   const [personalOpened, { toggle: togglePersonal }] = useDisclosure(false);
   const [businessOpened, { toggle: toggleBusiness }] = useDisclosure(false);
   const [faqOpened, { toggle: toggleFaq }] = useDisclosure(false);
-  const supportphone = "0978616116";
+  const supportphone = "8501";
 
   const { logout } = useAuth();
 
