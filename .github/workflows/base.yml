@@ -1,12 +1,10 @@
-name: Lint, Build and Sync
+name: Lint, Build, Sync and APK
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   ci:
@@ -14,32 +12,43 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'adopt'
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
+          node-version: 20
           cache: 'yarn'
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+
       - name: Lint
         run: yarn lint
+
       - name: Build
         run: yarn build
+
       - name: Sync
         run: yarn cap sync
-      - name: Set up Android SDK
-        uses: vgaidarji/setup-android@v1
-      - name: Build Android APK
-        run: |
-          cd android
-          ./gradlew assembleDebug
+
+      - name: Build APK
+        run: cd android && ./gradlew assembleDebug
+
       - name: Delete previous artifacts
         run: |
-          ARTIFACTS=$(gh api /repos/${{ github.repository }}/actions/artifacts?name=debug-apk | jq -r '.artifacts[].id')
+          ARTIFACTS=$(gh api /repos/${{ github.repository }}/actions/artifacts?name=android-build | jq -r '.artifacts[].id')
           for ID in $ARTIFACTS; do
             gh api --method DELETE /repos/${{ github.repository }}/actions/artifacts/$ID
           done
-      - name: Upload APK
+
+      - name: Upload Android build
         uses: actions/upload-artifact@v3
         with:
-          name: debug-apk
+          name: android-build
           path: android/app/build/outputs/apk/debug/app-debug.apk
