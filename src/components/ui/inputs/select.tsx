@@ -11,8 +11,9 @@ export function ContainedSelect({
   data,
   search,
   setValue,
+  value,
   override = false,
-  mutator
+  mutator,
 }: {
   label: string;
   placeholder: string;
@@ -22,6 +23,7 @@ export function ContainedSelect({
   mr?: string;
   data?: string[] | { label: string; value: string }[];
   search?: boolean;
+  value?: string;
   setValue?: (value: string | null) => void;
   override?: boolean;
   mutator?: (value: string | null) => void;
@@ -29,6 +31,7 @@ export function ContainedSelect({
   return (
     <>
       <Select
+        value={value}
         onChange={(value) => (!override ? setValue?.(value) : mutator?.(value))}
         searchable={search}
         mt={mt}

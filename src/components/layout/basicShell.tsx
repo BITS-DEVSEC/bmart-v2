@@ -30,6 +30,8 @@ import Cart from "./cart";
 import Auth from "./auth";
 import { useAuth } from "@/context/auth";
 import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { toSell, toBuy } from "@/redux/state/userType";
 
 export default function BasicShell({
   children,
@@ -40,12 +42,14 @@ export default function BasicShell({
   alt?: boolean;
   noSell?: boolean;
 }) {
+  const userType = useAppSelector((state) => state.userType.value);
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const activePath = router.pathname;
   const [opened, { toggle }] = useDisclosure();
   const [authOpened, { toggle: toggleAuth }] = useDisclosure();
   const [triggeredRoute, setTriggerRoute] = useState<string>();
-  const { isTestAuth } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   return (
     <AppShell
@@ -79,7 +83,11 @@ export default function BasicShell({
                 color="primary"
                 fullWidth
                 size="xs"
+                value={userType}
                 data={["BUY", "SELL"]}
+                onChange={(value) => {
+                  dispatch(value == "SELL" ? toSell() : toBuy());
+                }}
               />
             )}
           </Group>
@@ -92,7 +100,10 @@ export default function BasicShell({
               style={{ flex: 1 }}
             />
             <Indicator radius={2} size={15} offset={5} label="5" color="red">
-              <ActionIcon onClick={isTestAuth ? toggle : toggleAuth} size="xl">
+              <ActionIcon
+                onClick={isAuthenticated ? toggle : toggleAuth}
+                size="xl"
+              >
                 <IconShoppingCart size={23} />
               </ActionIcon>
             </Indicator>
@@ -162,7 +173,7 @@ export default function BasicShell({
                   variant="subtle"
                   onClick={() => {
                     const paths = ["/profile", "/request", "/bank", "/orders"];
-                    if (paths.includes(opt.path) && !isTestAuth) {
+                    if (paths.includes(opt.path) && !isAuthenticated) {
                       setTriggerRoute(opt.path);
                       toggleAuth();
                       return;

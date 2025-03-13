@@ -12,6 +12,7 @@ import { IconArrowRightDashed, IconDeviceMobile } from "@tabler/icons-react";
 import { useRouter } from "next/router";
 import { ContainedInputs } from "../ui/inputs/text";
 import { useAuth } from "@/context/auth";
+import { useState } from "react";
 
 export default function Auth({
   opened,
@@ -19,15 +20,19 @@ export default function Auth({
   regPage,
   alt,
   triggerRoute,
+  phone,
 }: {
   opened: boolean;
   toggle: () => void;
   regPage?: boolean;
   alt?: boolean;
   triggerRoute?: string;
+  phone?: string;
 }) {
   const router = useRouter();
-  const { login } = useAuth();
+  const [phoneNum, setPhoneNum] = useState("");
+  const [password, setPassword] = useState("");
+  const { login, loading } = useAuth();
   return (
     <Modal
       overlayProps={{
@@ -38,17 +43,21 @@ export default function Auth({
       onClose={toggle}
       title={<Text fw={700}>LOGIN</Text>}
     >
-      {alt && (
+      {(alt || phone) && (
         <Card withBorder>
           <Flex justify="space-between" align="center">
             <Flex direction="column">
-              <Title order={4}>0978616116</Title>
-              <Text size="xs" c="dimmed">
-                Nigus Solomon Takele
-              </Text>
-              <Text size="xs" c="dimmed">
-                00-1234-212-1
-              </Text>
+              <Title order={4}>{phone}</Title>
+              {alt && !phone && (
+                <>
+                  <Text size="xs" c="dimmed">
+                    Nigus Solomon Takele
+                  </Text>
+                  <Text size="xs" c="dimmed">
+                    00-1234-212-1
+                  </Text>
+                </>
+              )}
             </Flex>
             <IconDeviceMobile />
           </Flex>
@@ -56,6 +65,8 @@ export default function Auth({
       )}
       {!alt && (
         <ContainedInputs
+          value={phoneNum}
+          setValue={setPhoneNum}
           label="Phone Number"
           placeholder="Enter your phone number"
         />
@@ -63,9 +74,18 @@ export default function Auth({
       <Title mt="md" size="xs">
         Enter your pin
       </Title>
-      <PinInput mb="sm" my="xs" mask length={6} size="md" />
+      <PinInput
+        value={password}
+        onChange={(value) => setPassword(value)}
+        mb="sm"
+        my="xs"
+        mask
+        length={6}
+        size="md"
+      />
       <CustomButton
-        action={() => login("0978616116", "123456", triggerRoute)}
+        loading={loading}
+        action={() => login(phoneNum, password, triggerRoute)}
         label={alt ? "Finish" : "Login"}
         ltr
         icon={<IconArrowRightDashed size={20} />}

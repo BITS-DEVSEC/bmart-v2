@@ -36,7 +36,7 @@ export default function FAQ({
   ));
   return (
     <Drawer title="Frequently Asked Questions" opened={opened} onClose={toggle}>
-      <Accordion variant="contained" defaultValue="Apples">
+      <Accordion variant="separated" defaultValue="Apples">
         {items}
       </Accordion>
     </Drawer>

@@ -46,15 +46,15 @@ const theme = createTheme({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <AuthProvider>
-      <Provider store={store}>
+    <Provider store={store}>
+      <AuthProvider>
         <MantineProvider defaultColorScheme="light" theme={theme}>
           <Notifications />
           <main className={dmSans.className}>
             <Component {...pageProps} />
           </main>
         </MantineProvider>
-      </Provider>
-    </AuthProvider>
+      </AuthProvider>
+    </Provider>
   );
 }

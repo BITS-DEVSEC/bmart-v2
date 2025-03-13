@@ -8,15 +8,42 @@ import { IconArrowRightDashed, IconWorld } from "@tabler/icons-react";
 import { useRouter } from "next/router";
 import Auth from "@/components/layout/auth";
 import { useDisclosure } from "@mantine/hooks";
+import { useLazyGetFaydaByIdQuery } from "@/redux/api/fayda";
+import { useEffect, useState } from "react";
+import { useAppDispatch } from "@/redux/hooks";
+import { setUser } from "@/redux/state/user";
+import { notifications } from "@mantine/notifications";
 
 export default function Register() {
+  const dispatch = useAppDispatch();
   const [opened, { toggle }] = useDisclosure(false);
-  const [loading, { toggle: toggleLoading }] = useDisclosure(false);
+  const [faydaId, setFaydaId] = useState("");
+  const [
+    getFayda,
+    { data: fayda, isLoading: isGettingFayda, error: faydaError },
+  ] = useLazyGetFaydaByIdQuery();
   const router = useRouter();
+
+  const handleFetchFayda = async () => {
+    await getFayda(faydaId);
+  };
+
+  useEffect(() => {
+    if (fayda) {
+      dispatch(setUser(fayda));
+      router.push("/register/details");
+    } else if (faydaError) {
+      notifications.show({
+        title: "Error",
+        message: "Failed to fetch fayda",
+        color: "red",
+      });
+    }
+  }, [fayda, dispatch, router, faydaError]);
 
   return (
     <Box style={{ height: "100vh" }}>
-      <LoadingOverlay visible={loading} />
+      <LoadingOverlay visible={isGettingFayda} />
       <Auth regPage opened={opened} toggle={toggle} />
       <Box style={{ height: "60vh", zIndex: 8 }} bg="primary">
         <Flex
@@ -48,17 +75,13 @@ export default function Register() {
           User Registration
         </Title>
         <ContainedInputs
+          value={faydaId}
+          setValue={setFaydaId}
           label="FAYDA ID Number"
           placeholder="Enter your FAYDA ID Number"
         />
         <CustomButton
-          action={() => {
-            toggleLoading();
-            setTimeout(() => {
-              router.push("/register/details");
-              toggleLoading();
-            }, 2000);
-          }}
+          action={() => handleFetchFayda()}
           props={{ mt: "lg" }}
           label="CONTINUE"
           ltr
