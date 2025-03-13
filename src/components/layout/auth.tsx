@@ -11,19 +11,23 @@ import CustomButton from "../ui/button";
 import { IconArrowRightDashed, IconDeviceMobile } from "@tabler/icons-react";
 import { useRouter } from "next/router";
 import { ContainedInputs } from "../ui/inputs/text";
+import { useAuth } from "@/context/auth";
 
 export default function Auth({
   opened,
   toggle,
   regPage,
   alt,
+  triggerRoute,
 }: {
   opened: boolean;
   toggle: () => void;
   regPage?: boolean;
   alt?: boolean;
+  triggerRoute?: string;
 }) {
   const router = useRouter();
+  const { login } = useAuth();
   return (
     <Modal
       overlayProps={{
@@ -61,7 +65,7 @@ export default function Auth({
       </Title>
       <PinInput mb="sm" my="xs" mask length={6} size="md" />
       <CustomButton
-        action={() => toggle()}
+        action={() => login("0978616116", "123456", triggerRoute)}
         label={alt ? "Finish" : "Login"}
         ltr
         icon={<IconArrowRightDashed size={20} />}

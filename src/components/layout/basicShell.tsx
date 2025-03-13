@@ -27,8 +27,9 @@ import { useRouter } from "next/router";
 import LogoAlt from "@/assets/image.png";
 import { useDisclosure } from "@mantine/hooks";
 import Cart from "./cart";
-import { useState } from "react";
 import Auth from "./auth";
+import { useAuth } from "@/context/auth";
+import { useState } from "react";
 
 export default function BasicShell({
   children,
@@ -43,7 +44,8 @@ export default function BasicShell({
   const activePath = router.pathname;
   const [opened, { toggle }] = useDisclosure();
   const [authOpened, { toggle: toggleAuth }] = useDisclosure();
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [triggeredRoute, setTriggerRoute] = useState<string>();
+  const { isTestAuth } = useAuth();
 
   return (
     <AppShell
@@ -52,7 +54,11 @@ export default function BasicShell({
       padding="md"
     >
       <Cart opened={opened} toggle={toggle} />
-      <Auth opened={authOpened} toggle={toggleAuth} />
+      <Auth
+        triggerRoute={triggeredRoute}
+        opened={authOpened}
+        toggle={toggleAuth}
+      />
       {alt && (
         <AppShell.Header
           style={{ border: 0, borderRadius: "0 0 5px 5px" }}
@@ -86,7 +92,7 @@ export default function BasicShell({
               style={{ flex: 1 }}
             />
             <Indicator radius={2} size={15} offset={5} label="5" color="red">
-              <ActionIcon onClick={loggedIn ? toggle : toggleAuth} size="xl">
+              <ActionIcon onClick={isTestAuth ? toggle : toggleAuth} size="xl">
                 <IconShoppingCart size={23} />
               </ActionIcon>
             </Indicator>
@@ -155,10 +161,10 @@ export default function BasicShell({
                 <Box
                   variant="subtle"
                   onClick={() => {
-                    const paths = ["/profile", "/request", "/bank"];
-                    if (paths.includes(opt.path) && !loggedIn) {
+                    const paths = ["/profile", "/request", "/bank", "/orders"];
+                    if (paths.includes(opt.path) && !isTestAuth) {
+                      setTriggerRoute(opt.path);
                       toggleAuth();
-                      setLoggedIn(false);
                       return;
                     }
                     router.push(opt.path);

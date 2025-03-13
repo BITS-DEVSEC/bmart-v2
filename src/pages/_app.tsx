@@ -13,6 +13,7 @@ import {
 
 import { DM_Sans } from "next/font/google";
 import { Notifications } from "@mantine/notifications";
+import { AuthProvider } from "@/context/auth";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -43,11 +44,13 @@ const theme = createTheme({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <MantineProvider defaultColorScheme="light" theme={theme}>
-      <Notifications />
-      <main className={dmSans.className}>
-        <Component {...pageProps} />
-      </main>
-    </MantineProvider>
+    <AuthProvider>
+      <MantineProvider defaultColorScheme="light" theme={theme}>
+        <Notifications />
+        <main className={dmSans.className}>
+          <Component {...pageProps} />
+        </main>
+      </MantineProvider>
+    </AuthProvider>
   );
 }

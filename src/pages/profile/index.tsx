@@ -28,6 +28,7 @@ import { useDisclosure } from "@mantine/hooks";
 import Personal from "./_personal";
 import Business from "./_business";
 import FAQ from "./_faq";
+import { useAuth } from "@/context/auth";
 
 export default function Profile() {
   const [profileStatusOpened, { toggle: toggleProfileStatus }] =
@@ -36,6 +37,8 @@ export default function Profile() {
   const [businessOpened, { toggle: toggleBusiness }] = useDisclosure(false);
   const [faqOpened, { toggle: toggleFaq }] = useDisclosure(false);
   const supportphone = "0978616116";
+
+  const { logout } = useAuth();
 
   return (
     <BasicShell>
@@ -57,7 +60,7 @@ export default function Profile() {
               </Text>
             </Flex>
           </Flex>
-          <ActionIcon color="red" variant="subtle">
+          <ActionIcon onClick={logout} color="red" variant="subtle">
             <IconLogout size={20} />
           </ActionIcon>
         </Flex>

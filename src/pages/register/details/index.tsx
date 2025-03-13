@@ -7,9 +7,11 @@ import { IconArrowBadgeLeft, IconArrowRightDashed } from "@tabler/icons-react";
 import { ContainedDates } from "@/components/ui/inputs/date";
 import { ContainedSelect } from "@/components/ui/inputs/select";
 import { useRouter } from "next/router";
+import { useAuth } from "@/context/auth";
 
 export default function RegisterDetails() {
   const router = useRouter();
+  const { login } = useAuth();
 
   return (
     <Box style={{ height: "100vh" }}>
@@ -70,6 +72,7 @@ export default function RegisterDetails() {
           </Box>
           <Box>
             <CustomButton
+              action={() => login("0978616161", "123456")}
               props={{ mt: "sm" }}
               label="FINISH"
               ltr
