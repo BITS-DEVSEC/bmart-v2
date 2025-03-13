@@ -1,22 +1,29 @@
+import { useMyRequestsQuery } from "@/redux/api/requests";
 import { Card, Flex, Text, Title } from "@mantine/core";
 import { IconReceipt } from "@tabler/icons-react";
 
 export default function ListRequest() {
+  const { data: requests } = useMyRequestsQuery({});
   return (
     <>
-      {[1, 2, 3, 4, 5].map((opt) => (
-        <Card mb="sm" withBorder key={opt}>
-          <Flex gap={15}>
-            <IconReceipt />
-            <Flex direction="column">
-              <Title order={5}>Transfer</Title>
-              <Text size="xs" c="dimmed">
-                Send money to another account, bank or mobile money
-              </Text>
+      {requests?.data?.map(
+        (opt: {
+          notes: string;
+          products: { name: string; quantity: number }[];
+        }) => (
+          <Card mb="sm" withBorder key={opt.notes}>
+            <Flex gap={15}>
+              <IconReceipt />
+              <Flex direction="column">
+                <Title order={5}>Transfer</Title>
+                <Text size="xs" c="dimmed">
+                  {opt.notes}
+                </Text>
+              </Flex>
             </Flex>
-          </Flex>
-        </Card>
-      ))}
+          </Card>
+        )
+      )}
     </>
   );
 }

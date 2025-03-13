@@ -14,6 +14,8 @@ import {
 import { DM_Sans } from "next/font/google";
 import { Notifications } from "@mantine/notifications";
 import { AuthProvider } from "@/context/auth";
+import { Provider } from "react-redux";
+import { store } from "@/redux/store";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -44,13 +46,15 @@ const theme = createTheme({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <AuthProvider>
-      <MantineProvider defaultColorScheme="light" theme={theme}>
-        <Notifications />
-        <main className={dmSans.className}>
-          <Component {...pageProps} />
-        </main>
-      </MantineProvider>
-    </AuthProvider>
+    <Provider store={store}>
+      <AuthProvider>
+        <MantineProvider defaultColorScheme="light" theme={theme}>
+          <Notifications />
+          <main className={dmSans.className}>
+            <Component {...pageProps} />
+          </main>
+        </MantineProvider>
+      </AuthProvider>
+    </Provider>
   );
 }

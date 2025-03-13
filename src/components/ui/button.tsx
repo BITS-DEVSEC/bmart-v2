@@ -10,6 +10,7 @@ export default function CustomButton({
   altColor,
   custColor,
   props,
+  loading,
 }: {
   render?: React.ReactNode;
   label: string;
@@ -20,6 +21,7 @@ export default function CustomButton({
   altColor?: boolean;
   custColor?: string;
   props?: { mt?: string; mb?: string };
+  loading?: boolean;
 }) {
   return (
     <Button
@@ -31,6 +33,7 @@ export default function CustomButton({
       h={50}
       color={altColor ? "white" : custColor || "primary"}
       variant={altColor ? "default" : "filled"}
+      loading={loading}
     >
       {render ? (
         render

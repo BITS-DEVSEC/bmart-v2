@@ -12,11 +12,9 @@ import {
   Title,
 } from "@mantine/core";
 import {
-  IconBuilding,
   IconChevronRight,
   IconFlagQuestion,
   IconInfoHexagon,
-  IconLock,
   IconLogout,
   IconPhoneCall,
   IconProgress,
@@ -38,7 +36,13 @@ export default function Profile() {
   const [faqOpened, { toggle: toggleFaq }] = useDisclosure(false);
   const supportphone = "8501";
 
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+  const statusColors = {
+    pending: "orange",
+    approved: "green",
+    rejected: "red",
+    null: "orange",
+  };
 
   return (
     <BasicShell>
@@ -52,11 +56,17 @@ export default function Profile() {
       <Card withBorder p="xs">
         <Flex justify="space-between" gap={20} align="center">
           <Flex gap={10} align="center">
-            <Avatar size="md" radius="sm" name="Nigus Solomon" />
+            <Avatar
+              size="md"
+              radius="sm"
+              name={user?.first_name + " " + user?.last_name}
+            />
             <Flex direction="column">
-              <Title order={5}>Nigus Solomon Takele</Title>
+              <Title order={5}>
+                {user?.first_name} {user?.middle_name} {user?.last_name}
+              </Title>
               <Text size="xs" c="dimmed">
-                +251 978 61 61 16
+                +251 {user?.phone_number?.slice(1)}
               </Text>
             </Flex>
           </Flex>
@@ -86,7 +96,9 @@ export default function Profile() {
               style={{ borderRadius: 5 }}
               leftSection={<IconProgress size={18} />}
               rightSection={<IconInfoHexagon color="white" size={20} />}
-              color="green"
+              color={
+                statusColors[user?.kyc_status as keyof typeof statusColors]
+              }
               active
               variant="filled"
               label="Profile Status"
@@ -98,15 +110,6 @@ export default function Profile() {
               rightSection={<IconChevronRight size={18} />}
               color="primary"
               label="Personal Information"
-            />
-            <Divider />
-            <NavLink
-              onClick={toggleBusiness}
-              style={{ borderRadius: 5 }}
-              leftSection={<IconBuilding size={18} />}
-              rightSection={<IconChevronRight size={18} />}
-              color="primary"
-              label="Business Information"
             />
             <Divider />
           </SimpleGrid>
@@ -122,14 +125,6 @@ export default function Profile() {
             style={{ border: "1px solid #DEDEDE", borderRadius: 5 }}
             cols={1}
           >
-            <NavLink
-              style={{ borderRadius: 5 }}
-              leftSection={<IconLock size={18} />}
-              rightSection={<IconChevronRight size={18} />}
-              variant="filled"
-              label="Change Password"
-            />
-            <Divider />
             <NavLink
               onClick={toggleFaq}
               style={{ borderRadius: 5 }}
