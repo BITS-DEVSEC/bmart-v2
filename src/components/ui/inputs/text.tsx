@@ -20,7 +20,7 @@ export function ContainedInputs({
   ml?: string;
   mr?: string;
   setValue?: (value: string) => void;
-  value?: string;
+  value?: string | number;
   override?: boolean;
   mutator?: (value: string) => void;
 }) {

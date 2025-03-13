@@ -7,7 +7,7 @@ import { useState } from "react";
 export default function Request() {
   const [active, setActive] = useState("Published Requests");
   return (
-    <BasicShell alt>
+    <BasicShell noSell alt>
       <SegmentedControl
         onChange={(e) => setActive(e as string)}
         value={active}

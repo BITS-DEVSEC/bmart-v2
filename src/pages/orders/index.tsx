@@ -14,7 +14,7 @@ export default function Request() {
         color="primary"
         mb="sm"
         fullWidth
-        data={["Incoming", "Outgoing"]}
+        data={["Quotations", "Incoming", "Outgoing"]}
       />
       <ScrollArea
         type="never"

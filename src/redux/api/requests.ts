@@ -14,7 +14,19 @@ export const requestsApi = createApi({
       query: () => "/item_requests/my_requests",
       providesTags: ["requests-base"],
     }),
+    createRequest: builder.mutation({
+      query: (data) => ({
+        url: "/item_requests",
+        body: { payload: data },
+        method: "POST",
+      }),
+      invalidatesTags: ["requests-base"],
+    }),
   }),
 });
 
-export const { useGetRequestsQuery, useMyRequestsQuery } = requestsApi;
+export const {
+  useGetRequestsQuery,
+  useMyRequestsQuery,
+  useCreateRequestMutation,
+} = requestsApi;

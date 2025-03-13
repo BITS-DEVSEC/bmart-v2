@@ -12,6 +12,7 @@ import { getCookie, deleteCookie, setCookie } from "@/utils/cookieManager";
 import { useLoginMutation } from "@/redux/api/auth";
 
 interface User {
+  id?: string | number;
   phone: string;
   first_name: string;
   middle_name: string;
