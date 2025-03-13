@@ -3,9 +3,10 @@ import { ScrollArea, SegmentedControl } from "@mantine/core";
 import { useState } from "react";
 import IncomingOrders from "./_incoming";
 import OutgoingOrders from "./_outgoing";
+import Quotations from "./quotations";
 
 export default function Request() {
-  const [active, setActive] = useState("Incoming");
+  const [active, setActive] = useState("Quotations");
   return (
     <BasicShell alt>
       <SegmentedControl
@@ -20,6 +21,7 @@ export default function Request() {
         type="never"
         style={{ height: "calc(100vh - 285px)", width: "100%" }}
       >
+        {active === "Quotations" && <Quotations />}
         {active === "Incoming" && <IncomingOrders />}
         {active === "Outgoing" && <OutgoingOrders />}
       </ScrollArea>
