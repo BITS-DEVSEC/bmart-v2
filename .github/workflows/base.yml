@@ -1,4 +1,4 @@
-name: Lint and Build
+name: Lint, Build and Sync
 
 on:
   push:
@@ -34,3 +34,19 @@ jobs:
 
       - name: Build
         run: npm run build
+  
+  sync:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Sync
+        run: npx cap sync
