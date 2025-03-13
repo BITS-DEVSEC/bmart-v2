@@ -26,3 +26,20 @@ jobs:
         run: yarn build
       - name: Sync
         run: yarn cap sync
+      - name: Set up Android SDK
+        uses: vgaidarji/setup-android@v1
+      - name: Build Android APK
+        run: |
+          cd android
+          ./gradlew assembleDebug
+      - name: Delete previous artifacts
+        run: |
+          ARTIFACTS=$(gh api /repos/${{ github.repository }}/actions/artifacts?name=debug-apk | jq -r '.artifacts[].id')
+          for ID in $ARTIFACTS; do
+            gh api --method DELETE /repos/${{ github.repository }}/actions/artifacts/$ID
+          done
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
