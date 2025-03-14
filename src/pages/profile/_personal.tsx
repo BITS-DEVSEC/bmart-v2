@@ -1,5 +1,5 @@
 import { useAuth } from "@/context/auth";
-import { Drawer, Table } from "@mantine/core";
+import { Badge, Drawer, Table } from "@mantine/core";
 
 export default function Personal({
   opened,
@@ -10,11 +10,16 @@ export default function Personal({
 }) {
   const { user } = useAuth();
 
-  console.log(user);
+  const statusColors = {
+    pending: "orange",
+    approved: "green",
+    rejected: "red",
+    null: "orange",
+  };
 
   return (
     <Drawer title="Personal Information" opened={opened} onClose={toggle}>
-      <Table withRowBorders={false} withColumnBorders>
+      <Table withRowBorders withColumnBorders={false}>
         <Table.Tbody>
           <Table.Tr>
             <Table.Td style={{ width: "120px", fontWeight: 700 }}>
@@ -70,6 +75,27 @@ export default function Personal({
           <Table.Tr>
             <Table.Td style={{ width: "120px", fontWeight: 700 }}>FAN</Table.Td>
             <Table.Td ta="right">{user?.fayda_id}</Table.Td>
+          </Table.Tr>
+          <Table.Tr
+            bg={statusColors[user?.kyc_status as keyof typeof statusColors]}
+          >
+            <Table.Td
+              style={{ width: "120px", fontWeight: 700, color: "white" }}
+            >
+              Status
+            </Table.Td>
+            <Table.Td ta="right">
+              <Badge
+                size="xs"
+                radius="xs"
+                color={
+                  statusColors[user?.kyc_status as keyof typeof statusColors]
+                }
+                variant="dot"
+              >
+                {user?.kyc_status}
+              </Badge>
+            </Table.Td>
           </Table.Tr>
         </Table.Tbody>
       </Table>

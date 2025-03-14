@@ -5,6 +5,7 @@ import {
   Box,
   Card,
   Flex,
+  LoadingOverlay,
   Overlay,
   ScrollArea,
   Text,
@@ -25,10 +26,15 @@ import { useState } from "react";
 import BankApplication from "./_bankApplication";
 import PaymentQr from "./_paymentQr";
 import MakePayment from "./_makePayment";
+import { useAuth } from "@/context/auth";
+import { useHasAccountQuery } from "@/redux/api/virtual_acc";
 
 export default function Bank() {
   const [mask, setMask] = useState(false);
-  const [hasBank, setHasBank] = useState(false);
+  const { user } = useAuth();
+  const { data: hasBank, isLoading } = useHasAccountQuery(
+    user?.id?.toString() || ""
+  );
   const [applicationOpened, { toggle: applicationToggle }] =
     useDisclosure(false);
   const [paymentOpened, { toggle: paymentToggle }] = useDisclosure(false);
@@ -184,12 +190,19 @@ export default function Bank() {
               )}
             </ActionIcon>
           </>
+        ) : isLoading ? (
+          <LoadingOverlay
+            overlayProps={{
+              backgroundOpacity: 0.23,
+              blur: 4,
+            }}
+            visible={isLoading}
+          />
         ) : (
           <div style={{ zIndex: 10 }}>
             <CustomButton
               action={() => {
                 applicationToggle();
-                setHasBank(false);
               }}
               ltr
               props={{ mt: "xl" }}

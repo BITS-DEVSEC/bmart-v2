@@ -8,7 +8,7 @@ import Quotations from "./quotations";
 export default function Request() {
   const [active, setActive] = useState("Quotations");
   return (
-    <BasicShell alt>
+    <BasicShell noSell alt>
       <SegmentedControl
         onChange={(e) => setActive(e as string)}
         value={active}
