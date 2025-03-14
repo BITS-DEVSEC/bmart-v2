@@ -81,7 +81,17 @@ export default function Register() {
           placeholder="Enter your FAYDA ID Number"
         />
         <CustomButton
-          action={() => handleFetchFayda()}
+          action={() => {
+            if (!faydaId || faydaId.length !== 16) {
+              notifications.show({
+                title: "Error",
+                message: "Invalid fayda ID",
+                color: "red",
+              });
+              return;
+            }
+            handleFetchFayda();
+          }}
           props={{ mt: "lg" }}
           label="CONTINUE"
           ltr
