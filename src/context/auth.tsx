@@ -24,6 +24,9 @@ interface User {
   created_at?: string;
   kyc_status?: string;
   fayda_id?: string;
+  sub_city?: string;
+  city?: string;
+  woreda?: string;
 }
 interface AuthContextProps {
   user: User | null;

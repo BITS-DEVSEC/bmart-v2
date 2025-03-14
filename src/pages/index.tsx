@@ -10,7 +10,6 @@ import {
   ScrollArea,
   SimpleGrid,
   Text,
-  Title,
 } from "@mantine/core";
 import Image from "next/image";
 import Logo from "@/assets/cardbg.svg";
@@ -22,7 +21,11 @@ import {
   useGetProductsQuery,
 } from "@/redux/api/products";
 import { useAppSelector } from "@/redux/hooks";
-import { useGetRequestsQuery } from "@/redux/api/requests";
+import {
+  useGetRequestsQuery,
+  useCreateQuotationsMutation,
+} from "@/redux/api/requests";
+import { notifications } from "@mantine/notifications";
 
 export default function Home() {
   const userType = useAppSelector((state) => state.userType.value);
@@ -30,10 +33,11 @@ export default function Home() {
   const { data: products, isLoading } = useGetProductsQuery({});
   const { data: categories } = useGetProductCategoriesQuery({});
   const { data: requests } = useGetRequestsQuery({});
-  console.log(products);
+  const [createQuotations, { isLoading: isCreating }] =
+    useCreateQuotationsMutation();
   return (
     <BasicShell alt>
-      <LoadingOverlay visible={isLoading} />
+      <LoadingOverlay visible={isLoading || isCreating} />
       {userType === "BUY" && (
         <>
           <FilterOptions opened={filterOpened} toggle={filterToggle} />
@@ -57,24 +61,29 @@ export default function Home() {
                   base_price: number;
                 }) => (
                   <Card withBorder shadow="sm" key={opt.name}>
-                    <Card.Section>
-                      <Image
-                        src={Logo.src}
-                        alt="Logo"
-                        width={200}
-                        height={200}
-                      />
-                    </Card.Section>
-                    <Card.Section p="xs">
-                      <Text>{opt.name}</Text>
-                      <Text size="xs" c="dimmed" lineClamp={2}>
-                        {opt.description}
-                      </Text>
-                      <Title mt={10} order={4}>
-                        {opt?.base_price?.toFixed(2)}{" "}
+                    <Flex justify="space-between" direction="column">
+                      <Card.Section>
+                        <Image
+                          src={Logo.src}
+                          alt="Logo"
+                          width={200}
+                          height={200}
+                        />
+                      </Card.Section>
+                      <Card.Section p="xs">
+                        <Text>{opt.name}</Text>
+                        <Text size="xs" c="dimmed" lineClamp={2}>
+                          {opt.description}
+                        </Text>
+                      </Card.Section>
+                      <Text mt={10} size="xs" fw={700}>
+                        {new Intl.NumberFormat("en-US", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }).format(opt?.base_price)}{" "}
                         <span style={{ fontSize: 10 }}>ETB</span>
-                      </Title>
-                    </Card.Section>
+                      </Text>
+                    </Flex>
                     <Box style={{ position: "absolute", bottom: -2, right: 5 }}>
                       <ActionIcon p={2} variant="subtle" size="md">
                         <IconShoppingBagPlus />
@@ -92,6 +101,7 @@ export default function Home() {
           <SimpleGrid mb="sm" cols={2}>
             {requests?.data?.map(
               (opt: {
+                id: number;
                 notes: string;
                 product: { name: string; quantity: number };
               }) => (
@@ -106,6 +116,24 @@ export default function Home() {
                     </Text>
                   </Card.Section>
                   <Button
+                    onClick={async () => {
+                      const res = await createQuotations({
+                        item_request_id: opt?.id,
+                      });
+                      if (res?.data?.success) {
+                        notifications.show({
+                          title: "Success",
+                          message: "Quotation created successfully",
+                          color: "green",
+                        });
+                      } else {
+                        notifications.show({
+                          title: "Error",
+                          message: "Quotation creation failed",
+                          color: "red",
+                        });
+                      }
+                    }}
                     rightSection={<IconCheck size={18} />}
                     justify="space-between"
                     mx={0}

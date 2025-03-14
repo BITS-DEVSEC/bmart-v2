@@ -199,26 +199,30 @@ export default function Bank() {
           </div>
         )}
       </Card>
-      <CustomButton
-        action={paymentToggle}
-        icon={<IconQrcode />}
-        ltr
-        props={{ mt: "sm" }}
-        label="RECIEVE PAYMENT"
-      />
-      <CustomButton
-        action={makePaymentToggle}
-        icon={<IconPaywall />}
-        altColor
-        ltr
-        props={{ mt: "sm" }}
-        label="MAKE PAYMENT"
-      />
+      {hasBank && (
+        <>
+          <CustomButton
+            action={paymentToggle}
+            icon={<IconQrcode />}
+            ltr
+            props={{ mt: "sm" }}
+            label="RECIEVE PAYMENT"
+          />
+          <CustomButton
+            action={makePaymentToggle}
+            icon={<IconPaywall />}
+            altColor
+            ltr
+            props={{ mt: "sm" }}
+            label="MAKE PAYMENT"
+          />
+        </>
+      )}
       <Flex gap={5} mt={10} align="center">
         <IconReportMoney />
         <Title order={5}>Recent Transactions</Title>
       </Flex>
-      {!hasBank ? (
+      {hasBank ? (
         <ScrollArea pt="sm" type="never" style={{ height: "35vh" }}>
           {[1, 2, 3, 4, 5].map((opt) => (
             <Card mb="sm" withBorder key={opt}>
