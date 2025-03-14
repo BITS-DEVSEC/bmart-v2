@@ -14,7 +14,15 @@ export const virtualAccApi = createApi({
       }),
       invalidatesTags: ["virtual-accounts"],
     }),
+    hasAccount: builder.query({
+      query: (id: string) => ({
+        url: `/users/${id}/has_virtual_account`,
+        method: "GET",
+      }),
+      providesTags: ["virtual-accounts"],
+    }),
   }),
 });
 
-export const { useCreateVirtualAccMutation } = virtualAccApi;
+export const { useCreateVirtualAccMutation, useHasAccountQuery } =
+  virtualAccApi;

@@ -5,6 +5,7 @@ import { requestsApi } from "./api/requests";
 import { faydaApi } from "./api/fayda";
 import { authApi } from "./api/auth";
 import { virtualAccApi } from "./api/virtual_acc";
+import { quotationApi } from "./api/quotations";
 import userTypeReducer from "./state/userType";
 import userReducer from "./state/user";
 import counterReducer from "./state/counterSilce";
@@ -17,6 +18,7 @@ export const store = configureStore({
     [faydaApi.reducerPath]: faydaApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [virtualAccApi.reducerPath]: virtualAccApi.reducer,
+    [quotationApi.reducerPath]: quotationApi.reducer,
     counter: counterReducer,
     userType: userTypeReducer,
     user: userReducer,
@@ -28,7 +30,8 @@ export const store = configureStore({
       requestsApi.middleware,
       faydaApi.middleware,
       authApi.middleware,
-      virtualAccApi.middleware
+      virtualAccApi.middleware,
+      quotationApi.middleware
     ),
 });
 
