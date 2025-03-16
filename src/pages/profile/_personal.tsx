@@ -19,40 +19,40 @@ export default function Personal({
 
   return (
     <Drawer title="Personal Information" opened={opened} onClose={toggle}>
-      <Table withRowBorders withColumnBorders={false}>
+      <Table withTableBorder withRowBorders withColumnBorders={false}>
         <Table.Tbody>
           <Table.Tr>
-            <Table.Td style={{ width: "120px", fontWeight: 700 }}>
+            <Table.Td style={{ width: "130px", fontWeight: 700 }}>
               First Name
             </Table.Td>
             <Table.Td ta="right">{user?.first_name}</Table.Td>
           </Table.Tr>
           <Table.Tr>
-            <Table.Td style={{ width: "120px", fontWeight: 700 }}>
+            <Table.Td style={{ width: "130px", fontWeight: 700 }}>
               Middle Name
             </Table.Td>
             <Table.Td ta="right">{user?.middle_name}</Table.Td>
           </Table.Tr>
           <Table.Tr>
-            <Table.Td style={{ width: "120px", fontWeight: 700 }}>
+            <Table.Td style={{ width: "130px", fontWeight: 700 }}>
               Last Name
             </Table.Td>
             <Table.Td ta="right">{user?.last_name}</Table.Td>
           </Table.Tr>
           <Table.Tr>
-            <Table.Td style={{ width: "120px", fontWeight: 700 }}>
+            <Table.Td style={{ width: "130px", fontWeight: 700 }}>
               Phone Number
             </Table.Td>
-            <Table.Td ta="right">+251 {user?.phone_number.slice(1)}</Table.Td>
+            <Table.Td ta="right">+251{user?.phone_number.slice(1)}</Table.Td>
           </Table.Tr>
           <Table.Tr>
-            <Table.Td style={{ width: "120px", fontWeight: 700 }}>
+            <Table.Td style={{ width: "130px", fontWeight: 700 }}>
               Date of Birth
             </Table.Td>
             <Table.Td ta="right">{user?.date_of_birth}</Table.Td>
           </Table.Tr>
           <Table.Tr>
-            <Table.Td style={{ width: "120px", fontWeight: 700 }}>
+            <Table.Td style={{ width: "130px", fontWeight: 700 }}>
               Gender
             </Table.Td>
             <Table.Td ta="right">
@@ -61,37 +61,33 @@ export default function Personal({
             </Table.Td>
           </Table.Tr>
           <Table.Tr>
-            <Table.Td style={{ width: "120px", fontWeight: 700 }}>
+            <Table.Td style={{ width: "130px", fontWeight: 700 }}>
               Nationality
             </Table.Td>
             <Table.Td ta="right">{user?.nationality}</Table.Td>
           </Table.Tr>
           <Table.Tr>
-            <Table.Td style={{ width: "120px", fontWeight: 700 }}>
+            <Table.Td style={{ width: "130px", fontWeight: 700 }}>
               Customer Since
             </Table.Td>
             <Table.Td ta="right">{user?.created_at}</Table.Td>
           </Table.Tr>
           <Table.Tr>
-            <Table.Td style={{ width: "120px", fontWeight: 700 }}>FAN</Table.Td>
+            <Table.Td style={{ width: "130px", fontWeight: 700 }}>FAN</Table.Td>
             <Table.Td ta="right">{user?.fayda_id}</Table.Td>
           </Table.Tr>
-          <Table.Tr
-            bg={statusColors[user?.kyc_status as keyof typeof statusColors]}
-          >
-            <Table.Td
-              style={{ width: "120px", fontWeight: 700, color: "white" }}
-            >
+          <Table.Tr>
+            <Table.Td style={{ width: "130px", fontWeight: 700 }}>
               Status
             </Table.Td>
             <Table.Td ta="right">
               <Badge
-                size="xs"
+                size="md"
                 radius="xs"
                 color={
                   statusColors[user?.kyc_status as keyof typeof statusColors]
                 }
-                variant="dot"
+                variant="filled"
               >
                 {user?.kyc_status}
               </Badge>

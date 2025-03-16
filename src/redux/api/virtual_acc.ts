@@ -21,8 +21,27 @@ export const virtualAccApi = createApi({
       }),
       providesTags: ["virtual-accounts"],
     }),
+    virtualAccDetails: builder.query({
+      query: () => ({
+        url: "/virtual_accounts/my_virtual_account",
+        method: "GET",
+      }),
+      providesTags: ["virtual-accounts"],
+    }),
+    pay: builder.mutation({
+      query: (data) => ({
+        url: "/virtual_account_transactions/pay",
+        body: { payload: data },
+        method: "POST",
+      }),
+      invalidatesTags: ["virtual-accounts"],
+    }),
   }),
 });
 
-export const { useCreateVirtualAccMutation, useHasAccountQuery } =
-  virtualAccApi;
+export const {
+  useCreateVirtualAccMutation,
+  useHasAccountQuery,
+  useVirtualAccDetailsQuery,
+  usePayMutation,
+} = virtualAccApi;

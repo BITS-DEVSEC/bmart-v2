@@ -25,11 +25,11 @@ export default function ProfileStatus({
   };
   return (
     <Modal opened={opened} onClose={toggle} title="Profile Status">
-      <Flex align="center" gap={10}>
+      <Flex align="center" gap={13}>
         <Avatar
           color="primary.9"
           variant="filled"
-          size="lg"
+          size="md"
           radius="xs"
           name={user?.first_name + " " + user?.last_name}
         />
@@ -38,7 +38,7 @@ export default function ProfileStatus({
             {user?.first_name} {user?.middle_name} {user?.last_name}
           </Title>
           <Text size="xs" c="dimmed">
-            +251 {user?.phone_number?.slice(1)}
+            +251{user?.phone_number?.slice(1)}
           </Text>
         </Flex>
       </Flex>

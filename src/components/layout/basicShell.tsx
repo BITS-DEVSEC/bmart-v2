@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   AppShell,
+  Avatar,
   Box,
   Card,
   Center,
@@ -14,17 +15,16 @@ import {
 } from "@mantine/core";
 import {
   IconBasket,
+  IconBuilding,
   IconBuildingBank,
   IconBuildingStore,
   IconReceipt,
-  // IconLayoutDashboard,
   IconSearch,
   IconShoppingCart,
-  IconUser,
 } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import LogoAlt from "@/assets/image.png";
+import LogoAlt from "@/assets/imageClear.png";
 import { useDisclosure } from "@mantine/hooks";
 import Cart from "./cart";
 import Auth from "./auth";
@@ -37,10 +37,12 @@ export default function BasicShell({
   children,
   alt,
   noSell,
+  noSearch,
 }: {
   children: React.ReactNode;
   alt?: boolean;
   noSell?: boolean;
+  noSearch?: boolean;
 }) {
   const userType = useAppSelector((state) => state.userType.value);
   const dispatch = useAppDispatch();
@@ -49,11 +51,11 @@ export default function BasicShell({
   const [opened, { toggle }] = useDisclosure();
   const [authOpened, { toggle: toggleAuth }] = useDisclosure();
   const [triggeredRoute, setTriggerRoute] = useState<string>();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   return (
     <AppShell
-      header={{ height: alt ? 120 : 0 }}
+      header={{ height: alt ? (noSearch ? 60 : 120) : 0 }}
       footer={{ height: 80 }}
       padding="md"
     >
@@ -64,13 +66,11 @@ export default function BasicShell({
         toggle={toggleAuth}
       />
       {alt && (
-        <AppShell.Header
-          style={{ border: 0, borderRadius: "0 0 5px 5px" }}
-          bg="primary.9"
-        >
-          <Group grow align="center" h="50%" px="md">
+        <AppShell.Header style={{ border: 0 }}>
+          <Group grow align="center" h={noSearch ? "100%" : "50%"} px="md">
             <Box style={{ zIndex: -1 }}>
               <Image
+                onClick={() => router.push("/")}
                 style={{ zIndex: -1 }}
                 src={LogoAlt.src}
                 alt="Logo"
@@ -78,9 +78,9 @@ export default function BasicShell({
                 height={50}
               />
             </Box>
-            {!noSell && (
+            {!noSell ? (
               <SegmentedControl
-                color="primary"
+                color="primary.9"
                 fullWidth
                 size="xs"
                 value={userType}
@@ -89,18 +89,42 @@ export default function BasicShell({
                   dispatch(value == "SELL" ? toSell() : toBuy());
                 }}
               />
+            ) : (
+              <Flex justify="flex-end">
+                <Avatar
+                  onClick={() => router.push("/profile")}
+                  variant="filled"
+                  color="primary"
+                  radius="md"
+                  name={
+                    isAuthenticated
+                      ? user?.first_name + " " + user?.last_name
+                      : ""
+                  }
+                />
+              </Flex>
             )}
           </Group>
-          <Group pb="md" align="center" h="50%" px="md">
-            <TextInput
-              rightSection={<IconSearch size={18} />}
-              placeholder="Search..."
-              size="md"
-              radius="sm"
-              style={{ flex: 1 }}
-            />
-            <Indicator radius={2} size={15} offset={5} label="5" color="red">
+          <Group pt="sm" pb="md" align="center" h="50%" px="md">
+            {!noSearch && (
+              <TextInput
+                rightSection={<IconSearch size={20} />}
+                placeholder="Search..."
+                size="md"
+                radius="md"
+                style={{ flex: 1 }}
+              />
+            )}
+            <Indicator
+              display="none"
+              radius={2}
+              size={15}
+              offset={5}
+              label="5"
+              color="red"
+            >
               <ActionIcon
+                variant="subtle"
                 onClick={isAuthenticated ? toggle : toggleAuth}
                 size="xl"
               >
@@ -126,7 +150,6 @@ export default function BasicShell({
                 ),
                 path: "/",
               },
-
               {
                 title: "Request",
                 icon: (
@@ -148,6 +171,16 @@ export default function BasicShell({
                 path: "/orders",
               },
               {
+                title: "Store",
+                icon: (
+                  <IconBuilding
+                    color={activePath == "/profile" ? "white" : "black"}
+                    size={25}
+                  />
+                ),
+                path: "/profile",
+              },
+              {
                 title: "Bank",
                 icon: (
                   <IconBuildingBank
@@ -156,16 +189,6 @@ export default function BasicShell({
                   />
                 ),
                 path: "/bank",
-              },
-              {
-                title: "Profile",
-                icon: (
-                  <IconUser
-                    color={activePath == "/profile" ? "white" : "black"}
-                    size={25}
-                  />
-                ),
-                path: "/profile",
               },
             ].map((opt) => (
               <Center key={opt.title}>

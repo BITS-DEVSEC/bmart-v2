@@ -1,6 +1,6 @@
 import {
   useCreateOrderMutation,
-  useGetQuotationsQuery,
+  useMyQuotationsQuery,
 } from "@/redux/api/quotations";
 import {
   ActionIcon,
@@ -17,21 +17,24 @@ import { useState } from "react";
 export default function Quotations() {
   const [activeId, setActiveId] = useState<number | null>(null);
   const { data: quotations, isLoading: fetchingQuotations } =
-    useGetQuotationsQuery({});
+    useMyQuotationsQuery({});
   const [createOrder, { isLoading: creatingOrder }] = useCreateOrderMutation();
   return (
     <>
       <LoadingOverlay visible={fetchingQuotations} />
       {quotations?.data?.map(
-        (opt: { id: number; item_request: { notes: string } }) => (
-          <Card mb="sm" withBorder key={opt?.item_request?.notes}>
+        (opt: {
+          id: number;
+          item_request: { product: { name: string; description: string } };
+        }) => (
+          <Card mb="sm" withBorder key={opt?.item_request?.product?.name}>
             <Flex justify="space-between" align="center">
               <Flex gap={15}>
                 <IconReceipt />
                 <Flex direction="column" style={{ maxWidth: 170 }}>
-                  <Title order={5}>Transfer</Title>
-                  <Text size="xs" c="dimmed">
-                    {opt?.item_request?.notes}
+                  <Title order={5}>{opt?.item_request?.product?.name}</Title>
+                  <Text lineClamp={2} size="xs" c="dimmed">
+                    {opt?.item_request?.product?.description}
                   </Text>
                 </Flex>
               </Flex>

@@ -161,13 +161,12 @@ export default function BankApplication({
                 const res = await createVirtualAcc({
                   user_id: user?.id,
                   branch_code: "001",
-                  product_scheme: "savings",
-                  voucher_type: "standard",
-                  balance: 1000,
-                  interest_rate: 2.5,
-                  interest_type: "annual",
+                  product_scheme: "1",
+                  voucher_type: "1",
+                  balance: 600000,
                   active: true,
                   status: 0,
+                  cbs_account_number: "123456789" + user?.id,
                 });
                 if (res?.data?.success) {
                   notifications.show({

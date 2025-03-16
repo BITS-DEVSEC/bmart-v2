@@ -15,13 +15,32 @@ export const quotationApi = createApi({
     }),
     createOrder: builder.mutation({
       query: (data) => ({
-        url: `/orders/${1}/create_from_quotation`,
+        url: `/orders/${data?.quotation_id}/create_from_quotation`,
         method: "POST",
-        body: { data },
+        body: data,
       }),
       invalidatesTags: ["quotations"],
+    }),
+    myOrders: builder.query({
+      query: () => ({
+        url: "/orders/my_orders",
+        method: "GET",
+      }),
+      providesTags: ["quotations"],
+    }),
+    myQuotations: builder.query({
+      query: () => ({
+        url: "/quotations/my_quotations",
+        method: "GET",
+      }),
+      providesTags: ["quotations"],
     }),
   }),
 });
 
-export const { useGetQuotationsQuery, useCreateOrderMutation } = quotationApi;
+export const {
+  useGetQuotationsQuery,
+  useCreateOrderMutation,
+  useMyOrdersQuery,
+  useMyQuotationsQuery,
+} = quotationApi;

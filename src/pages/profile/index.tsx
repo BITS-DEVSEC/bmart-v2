@@ -57,6 +57,8 @@ export default function Profile() {
         <Flex justify="space-between" gap={20} align="center">
           <Flex gap={10} align="center">
             <Avatar
+              variant="filled"
+              color="primary"
               size="md"
               radius="sm"
               name={user?.first_name + " " + user?.last_name}
@@ -66,7 +68,7 @@ export default function Profile() {
                 {user?.first_name} {user?.middle_name} {user?.last_name}
               </Title>
               <Text size="xs" c="dimmed">
-                +251 {user?.phone_number?.slice(1)}
+                +251{user?.phone_number?.slice(1)}
               </Text>
             </Flex>
           </Flex>
