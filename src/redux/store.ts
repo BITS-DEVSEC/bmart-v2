@@ -7,6 +7,7 @@ import { authApi } from "./api/auth";
 import { virtualAccApi } from "./api/virtual_acc";
 import { quotationApi } from "./api/quotations";
 import userTypeReducer from "./state/userType";
+import queryReducer from "./state/query";
 import userReducer from "./state/user";
 import counterReducer from "./state/counterSilce";
 
@@ -21,6 +22,7 @@ export const store = configureStore({
     [quotationApi.reducerPath]: quotationApi.reducer,
     counter: counterReducer,
     userType: userTypeReducer,
+    query: queryReducer,
     user: userReducer,
   },
   middleware: (getDefaultMiddleware) =>

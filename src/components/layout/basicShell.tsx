@@ -14,9 +14,9 @@ import {
   TextInput,
 } from "@mantine/core";
 import {
-  IconBasket,
+  IconAffiliate,
   IconBuilding,
-  IconBuildingBank,
+  IconWallet,
   IconBuildingStore,
   IconReceipt,
   IconSearch,
@@ -137,7 +137,7 @@ export default function BasicShell({
 
       <AppShell.Main>{children}</AppShell.Main>
       <AppShell.Footer style={{ border: 0 }}>
-        <Card radius="md" mx="md" withBorder shadow="lg" p={7}>
+        <Card radius="md" mx="md" withBorder p={7}>
           <SimpleGrid spacing="xs" verticalSpacing="xs" cols={5}>
             {[
               {
@@ -151,9 +151,9 @@ export default function BasicShell({
                 path: "/",
               },
               {
-                title: "Request",
+                title: "Requests",
                 icon: (
-                  <IconBasket
+                  <IconAffiliate
                     color={activePath == "/request" ? "white" : "black"}
                     size={25}
                   />
@@ -174,16 +174,16 @@ export default function BasicShell({
                 title: "Store",
                 icon: (
                   <IconBuilding
-                    color={activePath == "/profile" ? "white" : "black"}
+                    color={activePath == "/store" ? "white" : "black"}
                     size={25}
                   />
                 ),
-                path: "/profile",
+                path: "/store",
               },
               {
                 title: "Bank",
                 icon: (
-                  <IconBuildingBank
+                  <IconWallet
                     color={activePath == "/bank" ? "white" : "black"}
                     size={25}
                   />
@@ -195,7 +195,7 @@ export default function BasicShell({
                 <Box
                   variant="subtle"
                   onClick={() => {
-                    const paths = ["/profile", "/request", "/bank", "/orders"];
+                    const paths = ["/store", "/request", "/bank", "/orders"];
                     if (paths.includes(opt.path) && !isAuthenticated) {
                       setTriggerRoute(opt.path);
                       toggleAuth();

@@ -12,7 +12,7 @@ import {
   Text,
 } from "@mantine/core";
 import Image from "next/image";
-import Logo from "@/assets/cardbg.svg";
+import Logo from "@/assets/imageAlt.png";
 import {
   IconCheck,
   IconMoodSad,
@@ -76,6 +76,8 @@ export default function Home() {
                     name: string;
                     description: string;
                     base_price: number;
+                    thumbnail_url: string;
+                    image_urls: string[];
                   }) => (
                     <Card
                       onClick={() => {
@@ -89,10 +91,11 @@ export default function Home() {
                       <Flex justify="space-between" direction="column">
                         <Card.Section>
                           <Image
-                            src={Logo.src}
+                            src={`https://snf.bitscollege.edu.et/${opt.thumbnail_url}`}
                             alt="Logo"
                             width={200}
                             height={200}
+                            onError={(e) => (e.currentTarget.src = Logo.src)}
                           />
                         </Card.Section>
                         <Card.Section p="xs">
@@ -139,15 +142,20 @@ export default function Home() {
                 (opt: {
                   id: number;
                   notes: string;
-                  product: { name: string; quantity: number };
+                  product: {
+                    name: string;
+                    quantity: number;
+                    thumbnail_url: string;
+                  };
                 }) => (
                   <Card withBorder shadow="sm" key={opt.notes}>
                     <Card.Section>
                       <Image
-                        src={Logo.src}
+                        src={`https://snf.bitscollege.edu.et/${opt.product.thumbnail_url}`}
                         alt="Logo"
                         width={200}
                         height={200}
+                        onError={(e) => (e.currentTarget.src = Logo.src)}
                       />
                     </Card.Section>
                     <Card.Section p="xs">
