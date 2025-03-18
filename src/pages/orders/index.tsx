@@ -1,27 +1,27 @@
 import BasicShell from "@/components/layout/basicShell";
 import { ScrollArea, SegmentedControl } from "@mantine/core";
 import { useState } from "react";
-import IncomingOrders from "./_incoming";
 import OutgoingOrders from "./_outgoing";
+import Quotations from "./quotations";
 
 export default function Request() {
-  const [active, setActive] = useState("Incoming");
+  const [active, setActive] = useState("Quotations");
   return (
-    <BasicShell alt>
+    <BasicShell noSearch noSell alt>
       <SegmentedControl
         onChange={(e) => setActive(e as string)}
         value={active}
         color="primary"
         mb="sm"
         fullWidth
-        data={["Incoming", "Outgoing"]}
+        data={["Quotations", "Incoming"]}
       />
       <ScrollArea
         type="never"
         style={{ height: "calc(100vh - 285px)", width: "100%" }}
       >
-        {active === "Incoming" && <IncomingOrders />}
-        {active === "Outgoing" && <OutgoingOrders />}
+        {active === "Quotations" && <Quotations />}
+        {active === "Incoming" && <OutgoingOrders />}
       </ScrollArea>
     </BasicShell>
   );

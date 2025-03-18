@@ -1,30 +1,32 @@
 import {
   ActionIcon,
   AppShell,
+  Avatar,
   Box,
   Card,
   Center,
   Flex,
   Group,
   Indicator,
+  Loader,
   SegmentedControl,
   SimpleGrid,
   Text,
   TextInput,
 } from "@mantine/core";
 import {
-  IconBasket,
-  IconBuildingBank,
+  IconAffiliate,
+  IconBuilding,
+  IconWallet,
   IconBuildingStore,
   IconReceipt,
-  // IconLayoutDashboard,
   IconSearch,
   IconShoppingCart,
-  IconUser,
+  IconQrcode,
 } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import LogoAlt from "@/assets/image.png";
+import LogoAlt from "@/assets/imageClear.png";
 import { useDisclosure } from "@mantine/hooks";
 import Cart from "./cart";
 import Auth from "./auth";
@@ -32,15 +34,26 @@ import { useAuth } from "@/context/auth";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { toSell, toBuy } from "@/redux/state/userType";
+import { usePullToRefresh } from "use-pull-to-refresh";
+import QrScanner from "./qrScanner";
+
+const MAXIMUM_PULL_LENGTH = 180;
+const REFRESH_THRESHOLD = 100;
 
 export default function BasicShell({
   children,
   alt,
   noSell,
+  noSearch,
+  refresh = () => {},
+  altRefetchColor,
 }: {
   children: React.ReactNode;
   alt?: boolean;
   noSell?: boolean;
+  noSearch?: boolean;
+  refresh?: () => void;
+  altRefetchColor?: boolean;
 }) {
   const userType = useAppSelector((state) => state.userType.value);
   const dispatch = useAppDispatch();
@@ -49,28 +62,41 @@ export default function BasicShell({
   const [opened, { toggle }] = useDisclosure();
   const [authOpened, { toggle: toggleAuth }] = useDisclosure();
   const [triggeredRoute, setTriggerRoute] = useState<string>();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  const [qropened, { toggle: toggleQr }] = useDisclosure();
+
+  const { isReady } = useRouter();
+
+  const reload = () => {
+    refresh();
+  };
+
+  const { isRefreshing } = usePullToRefresh({
+    onRefresh: reload,
+    maximumPullLength: MAXIMUM_PULL_LENGTH,
+    refreshThreshold: REFRESH_THRESHOLD,
+    isDisabled: !isReady,
+  });
 
   return (
     <AppShell
-      header={{ height: alt ? 120 : 0 }}
+      header={{ height: alt ? (noSearch ? 60 : 120) : 0 }}
       footer={{ height: 80 }}
       padding="md"
     >
       <Cart opened={opened} toggle={toggle} />
+      <QrScanner opened={qropened} toggle={toggleQr} />
       <Auth
         triggerRoute={triggeredRoute}
         opened={authOpened}
         toggle={toggleAuth}
       />
       {alt && (
-        <AppShell.Header
-          style={{ border: 0, borderRadius: "0 0 5px 5px" }}
-          bg="primary.9"
-        >
-          <Group grow align="center" h="50%" px="md">
+        <AppShell.Header style={{ border: 0 }}>
+          <Group grow align="center" h={noSearch ? "100%" : "50%"} px="md">
             <Box style={{ zIndex: -1 }}>
               <Image
+                onClick={() => router.push("/")}
                 style={{ zIndex: -1 }}
                 src={LogoAlt.src}
                 alt="Logo"
@@ -78,9 +104,9 @@ export default function BasicShell({
                 height={50}
               />
             </Box>
-            {!noSell && (
+            {!noSell ? (
               <SegmentedControl
-                color="primary"
+                color="primary.9"
                 fullWidth
                 size="xs"
                 value={userType}
@@ -89,18 +115,42 @@ export default function BasicShell({
                   dispatch(value == "SELL" ? toSell() : toBuy());
                 }}
               />
+            ) : (
+              <Flex justify="flex-end">
+                <Avatar
+                  onClick={() => router.push("/profile")}
+                  variant="filled"
+                  color="primary"
+                  radius="md"
+                  name={
+                    isAuthenticated
+                      ? user?.first_name + " " + user?.last_name
+                      : ""
+                  }
+                />
+              </Flex>
             )}
           </Group>
-          <Group pb="md" align="center" h="50%" px="md">
-            <TextInput
-              rightSection={<IconSearch size={18} />}
-              placeholder="Search..."
-              size="md"
-              radius="sm"
-              style={{ flex: 1 }}
-            />
-            <Indicator radius={2} size={15} offset={5} label="5" color="red">
+          <Group pt="sm" pb="md" align="center" h="50%" px="md">
+            {!noSearch && (
+              <TextInput
+                rightSection={<IconSearch size={20} />}
+                placeholder="Search..."
+                size="md"
+                radius="md"
+                style={{ flex: 1 }}
+              />
+            )}
+            <Indicator
+              display="none"
+              radius={2}
+              size={15}
+              offset={5}
+              label="5"
+              color="red"
+            >
               <ActionIcon
+                variant="subtle"
                 onClick={isAuthenticated ? toggle : toggleAuth}
                 size="xl"
               >
@@ -111,9 +161,37 @@ export default function BasicShell({
         </AppShell.Header>
       )}
 
-      <AppShell.Main>{children}</AppShell.Main>
+      <AppShell.Main>
+        {isRefreshing && (
+          <Loader
+            color={!altRefetchColor ? "primary" : "white"}
+            type="bars"
+            style={{
+              zIndex: 1000,
+              position: "absolute",
+              top: "30%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          />
+        )}
+        {children}
+        <ActionIcon
+          display="none"
+          onClick={toggleQr}
+          size="xl"
+          variant="default"
+          style={{
+            position: "absolute",
+            right: "15px",
+            bottom: "90px",
+          }}
+        >
+          <IconQrcode size={35} />
+        </ActionIcon>
+      </AppShell.Main>
       <AppShell.Footer style={{ border: 0 }}>
-        <Card radius="md" mx="md" withBorder shadow="lg" p={7}>
+        <Card radius="md" mx="md" withBorder p={7}>
           <SimpleGrid spacing="xs" verticalSpacing="xs" cols={5}>
             {[
               {
@@ -126,11 +204,10 @@ export default function BasicShell({
                 ),
                 path: "/",
               },
-
               {
-                title: "Request",
+                title: "Requests",
                 icon: (
-                  <IconBasket
+                  <IconAffiliate
                     color={activePath == "/request" ? "white" : "black"}
                     size={25}
                   />
@@ -148,31 +225,31 @@ export default function BasicShell({
                 path: "/orders",
               },
               {
+                title: "Store",
+                icon: (
+                  <IconBuilding
+                    color={activePath == "/store" ? "white" : "black"}
+                    size={25}
+                  />
+                ),
+                path: "/store",
+              },
+              {
                 title: "Bank",
                 icon: (
-                  <IconBuildingBank
+                  <IconWallet
                     color={activePath == "/bank" ? "white" : "black"}
                     size={25}
                   />
                 ),
                 path: "/bank",
               },
-              {
-                title: "Profile",
-                icon: (
-                  <IconUser
-                    color={activePath == "/profile" ? "white" : "black"}
-                    size={25}
-                  />
-                ),
-                path: "/profile",
-              },
             ].map((opt) => (
               <Center key={opt.title}>
                 <Box
                   variant="subtle"
                   onClick={() => {
-                    const paths = ["/profile", "/request", "/bank", "/orders"];
+                    const paths = ["/store", "/request", "/bank", "/orders"];
                     if (paths.includes(opt.path) && !isAuthenticated) {
                       setTriggerRoute(opt.path);
                       toggleAuth();

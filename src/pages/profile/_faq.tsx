@@ -7,28 +7,28 @@ export default function FAQ({
   opened: boolean;
   toggle: () => void;
 }) {
-  const groceries = [
+  const faqs = [
     {
-      emoji: "🍎",
-      value: "Apples",
+      emoji: "💰",
+      value: "What is Supply Chain Financing?",
       description:
-        "Crisp and refreshing fruit. Apples are known for their versatility and nutritional benefits. They come in a variety of flavors and are great for snacking, baking, or adding to salads.",
+        "Supply Chain Financing is a platform provided by our bank that enables businesses to optimize their working capital by unlocking cash from their supply chain. It allows buyers to pay suppliers early while enjoying extended payment terms.",
     },
     {
-      emoji: "🍌",
-      value: "Bananas",
+      emoji: "📈",
+      value: "How does Supply Chain Financing work?",
       description:
-        "Naturally sweet and potassium-rich fruit. Bananas are a popular choice for their energy-boosting properties and can be enjoyed as a quick snack, added to smoothies, or used in baking.",
+        "Our platform automates the entire invoice financing process, from uploading invoices to receiving payments. Suppliers can upload their invoices, and buyers can review and approve them for payment.",
     },
     {
-      emoji: "🥦",
-      value: "Broccoli",
+      emoji: "🤝",
+      value: "What are the benefits of Supply Chain Financing?",
       description:
-        "Nutrient-packed green vegetable. Broccoli is packed with vitamins, minerals, and fiber. It has a distinct flavor and can be enjoyed steamed, roasted, or added to stir-fries.",
+        "Supply Chain Financing provides businesses with improved cash flow, reduced costs, and stronger relationships with their suppliers. It also allows buyers to benefit from extended payment terms without affecting the payment terms of their suppliers.",
     },
   ];
 
-  const items = groceries.map((item) => (
+  const items = faqs.map((item) => (
     <Accordion.Item key={item.value} value={item.value}>
       <Accordion.Control icon={item.emoji}>{item.value}</Accordion.Control>
       <Accordion.Panel>{item.description}</Accordion.Panel>

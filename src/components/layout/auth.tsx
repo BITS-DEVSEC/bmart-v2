@@ -85,7 +85,7 @@ export default function Auth({
       />
       <CustomButton
         loading={loading}
-        action={() => login(phoneNum, password, triggerRoute)}
+        action={() => login(phone || phoneNum, password, triggerRoute)}
         label={alt ? "Finish" : "Login"}
         ltr
         icon={<IconArrowRightDashed size={20} />}

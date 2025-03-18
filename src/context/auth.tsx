@@ -10,8 +10,10 @@ import { jwtDecode } from "jwt-decode";
 import { notifications } from "@mantine/notifications";
 import { getCookie, deleteCookie, setCookie } from "@/utils/cookieManager";
 import { useLoginMutation } from "@/redux/api/auth";
+import { resetReduxStore } from "@/redux/store";
 
 interface User {
+  id?: string | number;
   phone: string;
   first_name: string;
   middle_name: string;
@@ -23,6 +25,9 @@ interface User {
   created_at?: string;
   kyc_status?: string;
   fayda_id?: string;
+  sub_city?: string;
+  city?: string;
+  woreda?: string;
 }
 interface AuthContextProps {
   user: User | null;
@@ -110,6 +115,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     deleteCookie({ key: "token" });
     deleteCookie({ key: "user" });
     deleteCookie({ key: "role" });
+    resetReduxStore();
     router.push("/");
   };
 

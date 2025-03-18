@@ -27,6 +27,7 @@ import Personal from "./_personal";
 import Business from "./_business";
 import FAQ from "./_faq";
 import { useAuth } from "@/context/auth";
+import { useProfileQuery } from "@/redux/api/auth";
 
 export default function Profile() {
   const [profileStatusOpened, { toggle: toggleProfileStatus }] =
@@ -35,6 +36,9 @@ export default function Profile() {
   const [businessOpened, { toggle: toggleBusiness }] = useDisclosure(false);
   const [faqOpened, { toggle: toggleFaq }] = useDisclosure(false);
   const supportphone = "8501";
+  const { data: userProfile, refetch: profileRefetch } = useProfileQuery({});
+
+  console.log(userProfile);
 
   const { logout, user } = useAuth();
   const statusColors = {
@@ -45,18 +49,25 @@ export default function Profile() {
   };
 
   return (
-    <BasicShell>
+    <BasicShell refresh={() => profileRefetch()}>
       <ProfileStatus
+        userProfile={userProfile}
         opened={profileStatusOpened}
         toggle={toggleProfileStatus}
       />
-      <Personal opened={personalOpened} toggle={togglePersonal} />
+      <Personal
+        userProfile={userProfile}
+        opened={personalOpened}
+        toggle={togglePersonal}
+      />
       <Business opened={businessOpened} toggle={toggleBusiness} />
       <FAQ opened={faqOpened} toggle={toggleFaq} />
       <Card withBorder p="xs">
         <Flex justify="space-between" gap={20} align="center">
           <Flex gap={10} align="center">
             <Avatar
+              variant="filled"
+              color="primary"
               size="md"
               radius="sm"
               name={user?.first_name + " " + user?.last_name}
@@ -66,7 +77,7 @@ export default function Profile() {
                 {user?.first_name} {user?.middle_name} {user?.last_name}
               </Title>
               <Text size="xs" c="dimmed">
-                +251 {user?.phone_number?.slice(1)}
+                +251{user?.phone_number?.slice(1)}
               </Text>
             </Flex>
           </Flex>
@@ -97,7 +108,9 @@ export default function Profile() {
               leftSection={<IconProgress size={18} />}
               rightSection={<IconInfoHexagon color="white" size={20} />}
               color={
-                statusColors[user?.kyc_status as keyof typeof statusColors]
+                statusColors[
+                  userProfile?.data?.kyc_status as keyof typeof statusColors
+                ]
               }
               active
               variant="filled"
