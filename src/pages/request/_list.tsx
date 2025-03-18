@@ -1,20 +1,32 @@
-import { useMyRequestsQuery } from "@/redux/api/requests";
 import { Card, Flex, LoadingOverlay, Text, Title } from "@mantine/core";
 import { IconMoodSad, IconReceipt } from "@tabler/icons-react";
 import { useState } from "react";
 import DetailsR from "./_details";
 import { useDisclosure } from "@mantine/hooks";
 
-export default function ListRequest() {
+export default function ListRequest({
+  requests,
+  fetchingRequests,
+}: {
+  requests: {
+    data: {
+      name: string;
+      description: string;
+      quantity: number;
+      notes: string;
+      unit: string;
+      product: { name: string; image_urls: string[] };
+    }[];
+  };
+  fetchingRequests: boolean;
+}) {
   const [opened, { toggle }] = useDisclosure(false);
-  const { data: requests, isLoading: fetchingRequests } = useMyRequestsQuery(
-    {}
-  );
   const [activeRequest, setActiveRequest] = useState<{
     name: string;
     description: string;
     quantity: number;
     unit: string;
+    image_urls: string[];
   }>();
   return (
     <>
@@ -26,7 +38,7 @@ export default function ListRequest() {
             notes: string;
             quantity: number;
             unit: string;
-            product: { name: string; quantity: number };
+            product: { name: string; image_urls: string[] };
           }) => (
             <Card
               onClick={() => {
@@ -36,6 +48,7 @@ export default function ListRequest() {
                   description: opt?.notes,
                   quantity: opt?.quantity,
                   unit: opt?.unit,
+                  image_urls: opt?.product?.image_urls,
                 });
               }}
               mb="sm"

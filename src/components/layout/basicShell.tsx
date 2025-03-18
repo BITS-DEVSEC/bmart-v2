@@ -8,6 +8,7 @@ import {
   Flex,
   Group,
   Indicator,
+  Loader,
   SegmentedControl,
   SimpleGrid,
   Text,
@@ -21,6 +22,7 @@ import {
   IconReceipt,
   IconSearch,
   IconShoppingCart,
+  IconQrcode,
 } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -32,17 +34,26 @@ import { useAuth } from "@/context/auth";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { toSell, toBuy } from "@/redux/state/userType";
+import { usePullToRefresh } from "use-pull-to-refresh";
+import QrScanner from "./qrScanner";
+
+const MAXIMUM_PULL_LENGTH = 180;
+const REFRESH_THRESHOLD = 100;
 
 export default function BasicShell({
   children,
   alt,
   noSell,
   noSearch,
+  refresh = () => {},
+  altRefetchColor,
 }: {
   children: React.ReactNode;
   alt?: boolean;
   noSell?: boolean;
   noSearch?: boolean;
+  refresh?: () => void;
+  altRefetchColor?: boolean;
 }) {
   const userType = useAppSelector((state) => state.userType.value);
   const dispatch = useAppDispatch();
@@ -52,6 +63,20 @@ export default function BasicShell({
   const [authOpened, { toggle: toggleAuth }] = useDisclosure();
   const [triggeredRoute, setTriggerRoute] = useState<string>();
   const { isAuthenticated, user } = useAuth();
+  const [qropened, { toggle: toggleQr }] = useDisclosure();
+
+  const { isReady } = useRouter();
+
+  const reload = () => {
+    refresh();
+  };
+
+  const { isRefreshing } = usePullToRefresh({
+    onRefresh: reload,
+    maximumPullLength: MAXIMUM_PULL_LENGTH,
+    refreshThreshold: REFRESH_THRESHOLD,
+    isDisabled: !isReady,
+  });
 
   return (
     <AppShell
@@ -60,6 +85,7 @@ export default function BasicShell({
       padding="md"
     >
       <Cart opened={opened} toggle={toggle} />
+      <QrScanner opened={qropened} toggle={toggleQr} />
       <Auth
         triggerRoute={triggeredRoute}
         opened={authOpened}
@@ -135,7 +161,35 @@ export default function BasicShell({
         </AppShell.Header>
       )}
 
-      <AppShell.Main>{children}</AppShell.Main>
+      <AppShell.Main>
+        {isRefreshing && (
+          <Loader
+            color={!altRefetchColor ? "primary" : "white"}
+            type="bars"
+            style={{
+              zIndex: 1000,
+              position: "absolute",
+              top: "30%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          />
+        )}
+        {children}
+        <ActionIcon
+          display="none"
+          onClick={toggleQr}
+          size="xl"
+          variant="default"
+          style={{
+            position: "absolute",
+            right: "15px",
+            bottom: "90px",
+          }}
+        >
+          <IconQrcode size={35} />
+        </ActionIcon>
+      </AppShell.Main>
       <AppShell.Footer style={{ border: 0 }}>
         <Card radius="md" mx="md" withBorder p={7}>
           <SimpleGrid spacing="xs" verticalSpacing="xs" cols={5}>

@@ -6,7 +6,11 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { IconCashBanknote, IconReceipt } from "@tabler/icons-react";
+import {
+  IconCashBanknote,
+  IconMoodSad,
+  IconReceipt,
+} from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import MakePayment from "../bank/_makePayment";
 import { useMyOrdersQuery } from "@/redux/api/quotations";
@@ -24,6 +28,8 @@ export default function OutgoingOrders() {
         (opt: {
           id: number;
           order_id: number;
+          unit_price: number;
+          quantity: number;
           product: {
             id: number;
             order_id: number;
@@ -41,6 +47,12 @@ export default function OutgoingOrders() {
                   <Text lineClamp={2} size="xs" c="dimmed">
                     {opt.product?.description}
                   </Text>
+                  <Title mt="xs" order={5}>
+                    {new Intl.NumberFormat("en-ET", {
+                      style: "currency",
+                      currency: "ETB",
+                    }).format(opt?.unit_price * opt?.quantity)}
+                  </Title>
                 </Flex>
               </Flex>
               <ActionIcon
@@ -69,6 +81,14 @@ export default function OutgoingOrders() {
             </Flex>
           </Card>
         )
+      )}
+      {orders?.order_items?.length == 0 && (
+        <Card withBorder>
+          <Flex gap={10} align="center">
+            <IconMoodSad size={40} />
+            <Text>No active orders found</Text>
+          </Flex>
+        </Card>
       )}
     </>
   );

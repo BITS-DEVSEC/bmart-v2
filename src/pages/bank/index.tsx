@@ -32,24 +32,39 @@ import MakePayment from "./_makePayment";
 import { useAuth } from "@/context/auth";
 import {
   useHasAccountQuery,
+  useMy_transactionsQuery,
   useVirtualAccDetailsQuery,
 } from "@/redux/api/virtual_acc";
 
 export default function Bank() {
   const [mask, setMask] = useState(false);
   const { user } = useAuth();
-  const { data: hasBank, isLoading } = useHasAccountQuery(
-    user?.id?.toString() || ""
-  );
+  const {
+    data: hasBank,
+    isLoading,
+    refetch: hasBankRefetch,
+  } = useHasAccountQuery(user?.id?.toString() || "");
   const [applicationOpened, { toggle: applicationToggle }] =
     useDisclosure(false);
   const [paymentOpened, { toggle: paymentToggle }] = useDisclosure(false);
   const [makePaymentOpened, { toggle: makePaymentToggle }] =
     useDisclosure(false);
-  const { data: vc } = useVirtualAccDetailsQuery({});
+  const { data: vc, refetch: vcRefetch } = useVirtualAccDetailsQuery({});
+  const { data: transactions, refetch: transactionsRefetch } =
+    useMy_transactionsQuery({});
 
   return (
-    <BasicShell noSell alt noSearch>
+    <BasicShell
+      refresh={() => {
+        hasBankRefetch();
+        vcRefetch();
+        transactionsRefetch();
+      }}
+      altRefetchColor
+      noSell
+      alt
+      noSearch
+    >
       <BankApplication opened={applicationOpened} toggle={applicationToggle} />
       <PaymentQr opened={paymentOpened} toggle={paymentToggle} />
       <MakePayment opened={makePaymentOpened} toggle={makePaymentToggle} />
@@ -252,48 +267,54 @@ export default function Bank() {
         <Title order={5}>Recent Transactions</Title>
         <IconReportMoney size={16} />
       </Flex>
-      {hasBank?.has_virtual_account && hasBank?.status !== "pending" ? (
-        <ScrollArea pt="sm" type="never" style={{ height: "35.5vh" }}>
-          {[1, 2, 3, 4, 5].map((opt) => (
-            <Card mb="sm" withBorder key={opt}>
-              <Flex gap={15}>
-                <IconReceipt />
-                <Flex direction="column" style={{ maxWidth: 170 }}>
-                  <Title order={5}>Transfer</Title>
-                  <Text size="xs" c="dimmed">
-                    Send money to another account, bank or mobile money
-                  </Text>
+      <ScrollArea pt="sm" type="never" style={{ height: "35.5vh" }}>
+        {transactions?.data?.length > 0 &&
+          transactions?.data?.map(
+            (opt: {
+              reference_number: string;
+              amount: number;
+              created_at: string;
+            }) => (
+              <Card mb="sm" withBorder key={opt.reference_number}>
+                <Flex gap={15}>
+                  <IconReceipt />
+                  <Flex direction="column" style={{ maxWidth: 170 }}>
+                    <Title order={5}>{opt.reference_number}</Title>
+                    <Text size="xs" c="dimmed">
+                      Send money to another account, bank or mobile money
+                    </Text>
+                  </Flex>
+                  <Title
+                    style={{
+                      position: "absolute",
+                      bottom: 0,
+                      right: 0,
+                      padding: "5px 10px",
+                    }}
+                    order={5}
+                  >
+                    {opt?.amount}0 ETB
+                  </Title>
                 </Flex>
-                <Title
-                  style={{
-                    position: "absolute",
-                    bottom: 0,
-                    right: 0,
-                    padding: "5px 10px",
-                  }}
-                  order={5}
-                >
-                  {(200 / opt).toFixed(2)}{" "}
-                  <span style={{ fontSize: "0.75rem" }}>ETB</span>
-                </Title>
+              </Card>
+            )
+          )}
+
+        {transactions?.data?.length === 0 && (
+          <Card withBorder>
+            <Flex align="center" gap={10}>
+              <IconGhost size={100} />
+              <Flex direction="column">
+                <Title order={4}>No Transactions Found!</Title>
+                <Text size="xs" c="dimmed">
+                  You have not made any transactions yet, please apply for an
+                  account to start transacting.
+                </Text>
               </Flex>
-            </Card>
-          ))}
-        </ScrollArea>
-      ) : (
-        <Card withBorder mt="sm">
-          <Flex align="center" gap={10}>
-            <IconGhost size={100} />
-            <Flex direction="column">
-              <Title order={4}>No Transactions Found!</Title>
-              <Text size="xs" c="dimmed">
-                You have not made any transactions yet, please apply for an
-                account to start transacting.
-              </Text>
             </Flex>
-          </Flex>
-        </Card>
-      )}
+          </Card>
+        )}
+      </ScrollArea>
     </BasicShell>
   );
 }

@@ -52,7 +52,14 @@ export const authApi = createApi({
       }),
       invalidatesTags: ["auth-base"],
     }),
+    profile: builder.query({
+      query: () => ({
+        url: "/users/profile",
+        method: "GET",
+      }),
+      providesTags: ["auth-base"],
+    }),
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation } = authApi;
+export const { useRegisterMutation, useLoginMutation, useProfileQuery } = authApi;

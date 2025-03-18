@@ -44,7 +44,7 @@ export default function BankApplication({
         <Box>
           <Flex justify="space-between" align="center">
             <Group>
-              {[1, 2].map((opt) => (
+              {[1].map((opt) => (
                 <Box
                   onClick={() => setActive(opt)}
                   style={{ width: 30, height: 30, borderRadius: 5 }}
@@ -138,7 +138,7 @@ export default function BankApplication({
           )}
         </Box>
         <Flex gap={10}>
-          {active > 1 && (
+          {active > 5 && (
             <CustomButton
               action={() => active > 1 && setActive((prev) => prev - 1)}
               label="Back"
@@ -147,7 +147,7 @@ export default function BankApplication({
               icon={<IconArrowLeftDashed size={20} />}
             />
           )}
-          {active < 2 && (
+          {active < 0 && (
             <CustomButton
               action={() => active < 3 && setActive((prev) => prev + 1)}
               label="Next"
@@ -155,7 +155,7 @@ export default function BankApplication({
               icon={<IconArrowRightDashed size={20} />}
             />
           )}
-          {active == 2 && (
+          {active == 1 && (
             <CustomButton
               action={async () => {
                 const res = await createVirtualAcc({

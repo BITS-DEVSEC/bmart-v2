@@ -10,6 +10,7 @@ import { jwtDecode } from "jwt-decode";
 import { notifications } from "@mantine/notifications";
 import { getCookie, deleteCookie, setCookie } from "@/utils/cookieManager";
 import { useLoginMutation } from "@/redux/api/auth";
+import { resetReduxStore } from "@/redux/store";
 
 interface User {
   id?: string | number;
@@ -114,6 +115,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     deleteCookie({ key: "token" });
     deleteCookie({ key: "user" });
     deleteCookie({ key: "role" });
+    resetReduxStore();
     router.push("/");
   };
 

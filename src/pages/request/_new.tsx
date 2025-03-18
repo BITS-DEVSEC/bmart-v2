@@ -11,7 +11,11 @@ import { useState } from "react";
 import { useCreateRequestMutation } from "@/redux/api/requests";
 import { notifications } from "@mantine/notifications";
 
-export default function NewRequest() {
+export default function NewRequest({
+  setActive,
+}: {
+  setActive: (active: string) => void;
+}) {
   const { user } = useAuth();
   const [request, setRequest] = useState<{
     user_id: string | number | undefined;
@@ -120,6 +124,13 @@ export default function NewRequest() {
               title: "Success",
               message: "Request published successfully",
               color: "green",
+            });
+            setActive("Published Requests");
+          } else {
+            notifications.show({
+              title: "Error",
+              message: "Failed to publish request",
+              color: "red",
             });
           }
         }}

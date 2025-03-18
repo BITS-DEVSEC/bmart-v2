@@ -36,6 +36,13 @@ export const virtualAccApi = createApi({
       }),
       invalidatesTags: ["virtual-accounts"],
     }),
+    my_transactions: builder.query({
+      query: () => ({
+        url: "/virtual_account_transactions/my_virtual_account_transactions",
+        method: "GET",
+      }),
+      providesTags: ["virtual-accounts"],
+    }),
   }),
 });
 
@@ -44,4 +51,5 @@ export const {
   useHasAccountQuery,
   useVirtualAccDetailsQuery,
   usePayMutation,
+  useMy_transactionsQuery,
 } = virtualAccApi;
